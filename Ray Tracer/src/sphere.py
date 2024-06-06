@@ -28,3 +28,8 @@ class Sphere:
             if dist > 0:
                 return dist
         return None
+
+    # define 'normal' function - takes surface point as param
+    def normal(self, surface_point):
+        """Calculates the diff betwen the serface point and the center of the sphere and returns surface normal"""
+        return (surface_point - self.center).normalize()

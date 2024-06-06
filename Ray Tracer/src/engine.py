@@ -39,6 +39,8 @@ class RenderEngine:
                 ray = Ray(camera, Point(x, y) - camera)
                 # take the result and put it in the pixels.set_pixels(i,j,self.ray_trace(ray, scene)) to render
                 pixels.set_pixels(i, j, self.ray_trace(ray, scene))
+            # print render progress
+            print("Render progress: {:3.0f}%".format(float(j) / float(height) * 100), end="\r")
                 
         return pixels
 
@@ -54,9 +56,9 @@ class RenderEngine:
             
         # find the hit position
         hit_position = ray.origin + ray.direction * hit_distance
+        hit_normal = hit_object.normal(hit_position)
         # find the hit color and increment (accumulate) - uses new function that takes the hit object, hit position and scene
-
-        color += self.find_object_color(hit_object, hit_position, scene)
+        color += self.find_object_color(hit_object, hit_position, hit_normal, scene)
 
         return color
 
@@ -77,9 +79,25 @@ class RenderEngine:
         return (min_distance, hit_object)
             
 
-    def find_object_color(self, hit_object, hit_position, scene):
-        # returns the color if we know what it hit
-        return hit_object.material
+    def find_object_color(self, hit_object, hit_position, normal, scene):
+        # define material, color, camera(camera - hit position) and color(ambient times color) variables
+        material = hit_object.material
+        obj_color = material.color_at(hit_position)
+        to_camera = scene.camera - hit_position
+        color = material.ambient * Color.from_hex("#000000")
+        specular_k = 50
 
-
+        # loop over every light and calc shading
+        for light in scene.lights:
+            # instantiate ray with hit position and light position minus hit position
+            to_light = Ray(hit_position, light.position - hit_position)
+            # diffuse shading (Lambert) must be posative
+            color += (obj_color * material.diffuse * max(normal.dot_product(to_light.direction), 0))
+            
+            # Specular shading (Bling-Phong) must be posative
+            half_vector = (to_light.direction + to_camera).normalize()
+            color += light.color * material.specular * max(normal.dot_product(half_vector), 0) ** specular_k
         
+        return color
+        
+
