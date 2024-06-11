@@ -15,24 +15,6 @@ class Image:
     def set_pixels(self, x, y, col):
         self.pixels[y][x] = col
 
-    # define write function (to file or to Jupyter notebook)
-    #def write_ppm(self, img_file):
-    #    def to_byte(c):
-    #        # checks for ppm file
-    #        return round(max(min(c * 255, 255), 0))
-    #        
-    #   # write the image in ppm format
-    #    img_file.write("P3 {} {}\n255\n".format(self.width, self.height))
-    #    
-    #    for row in self.pixels:
-    #        for color in row:
-    #            img_file.write(
-    #                "{} {} {} ".format(
-    #                    to_byte(color.x), to_byte(color.y), to_byte(color.z)
-    #                )
-    #            )
-    #        img_file.write("\n")
-
     # display results in Jupyter notebook
     def to_pil_image(self):
         def to_byte(c):

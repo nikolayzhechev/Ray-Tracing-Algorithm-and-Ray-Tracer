@@ -5,6 +5,9 @@ from scene import Scene
 from point import Point
 
 class RenderEngine:
+    MAX_DEPTH = 5
+    MIN_DISPLACE = 0.0001
+    
     # define render function that takes the scene as an argument
     def render(self, scene):
         # define w, h
@@ -60,6 +63,18 @@ class RenderEngine:
         # find the hit color and increment (accumulate) - uses new function that takes the hit object, hit position and scene
         color += self.find_object_color(hit_object, hit_position, hit_normal, scene)
 
+        # calculate depth and reflection
+        if depth < self.MAX_DEPTH:
+            new_ray_pos = hit_position + hit_normal * self.MIN_DISPLACE
+            new_ray_dir = (
+                ray.direction - 2 * ray.direction.dot_product(hit_normal) * hit_normal
+            )
+            new_ray = Ray(new_ray_pos, new_ray_dir)
+            # Attenuate the reflected ray by the reflection coefficient (reflection looses energy when ray is bounicng on every object)
+            color += (
+                self.ray_trace(new_ray, scene, depth + 1) * hit_object.material.reflection
+            )
+            
         return color
 
     def find_nearest_object(self, ray, scene):

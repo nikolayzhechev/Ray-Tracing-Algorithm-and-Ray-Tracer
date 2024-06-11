@@ -35,7 +35,7 @@ def main(WIDTH, HEIGHT):
     ]
     
     # instantiate Vector for camera view
-    camera = Vector(0, 0, -1)
+    camera = Vector(0, -0.35, -1)
     # define scene and pass objects, camera, w, h to the scene
     scene = Scene(CAMERA, OBJECTS, LIGHTS, WIDTH, HEIGHT)
     # instantiate render engine
