@@ -35,5 +35,5 @@ class Image:
             pil_img.save(f, format='PNG')
             display(IPImage(data=f.getvalue(), format='png'))
             
-        save_path = "output_image.png"
+        save_path = "Output/output_image.png"
         pil_img.save(save_path, format='PNG')
